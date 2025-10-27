@@ -1,10 +1,11 @@
+import Link from "next/link";
 import { defaultCategories, getCategories } from "@/app/products/query";
-import { Badge } from "@/components/ui/badge";
+import FilterBadge from "@/components/filter-badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toArray } from "@/lib/shared";
-import { cn } from "@/lib/utils";
 import { AutoSubmitField, AutoSubmitForm } from "./auto-submit-form";
+import { Category } from "./query";
 
 export default async function ProductsFilter({ category }: { category: Promise<string | string[] | undefined> }) {
 	const allCategories = await getCategories();
@@ -12,7 +13,17 @@ export default async function ProductsFilter({ category }: { category: Promise<s
 
 	return (
 		<AutoSubmitForm action={"/products"}>
-			<MultiSelect name="category" options={allCategories} selectedValues={selectedCategories} />
+			<div className="flex flex-wrap gap-2">
+				<MultiSelect name="category" options={allCategories} selectedValues={selectedCategories} />
+
+				{selectedCategories.length > 0 && (
+					<FilterBadge className="text-destructive border-destructive hover:text-destructive-foreground">
+						<Link href="/products" className="focus-visible:outline-none">
+							Reset Filters
+						</Link>
+					</FilterBadge>
+				)}
+			</div>
 		</AutoSubmitForm>
 	);
 }
@@ -24,53 +35,41 @@ type MultiSelectProps = {
 };
 
 function MultiSelect({ name, options, selectedValues = [] }: MultiSelectProps) {
-	return (
-		<div className="flex flex-wrap gap-2">
-			{options.map((option) => {
-				const isSelected = selectedValues.includes(option.value);
+	return options.map((option) => {
+		const isSelected = selectedValues.includes(option.value);
 
-				return (
-					<AutoSubmitField key={option.value} triggerPropName="onChange">
-						<Badge
-							asChild
-							variant={isSelected ? "default" : "outline"}
-							className={cn(
-								"h-6 font-mono tabular-nums",
-								"cursor-pointer transition-all duration-200 ease-in-out",
-								"hover:scale-105 active:scale-95",
-							)}
-						>
-							<Label htmlFor={`${name}-${option.value}`}>
-								<Input
-									type="checkbox"
-									id={`${name}-${option.value}`}
-									name={name}
-									value={option.value}
-									className="sr-only"
-									checked={isSelected}
-									readOnly
-								/>
-								{option.label}
-							</Label>
-						</Badge>
-					</AutoSubmitField>
-				);
-			})}
-		</div>
-	);
+		return (
+			<AutoSubmitField key={option.value} triggerPropName="onChange">
+				<FilterBadge asChild variant={isSelected ? "default" : "outline"}>
+					<Label htmlFor={`${name}-${option.value}`}>
+						<Input
+							type="checkbox"
+							id={`${name}-${option.value}`}
+							name={name}
+							value={option.value}
+							className="sr-only hidden"
+							checked={isSelected}
+							readOnly
+						/>
+						{option.label}
+					</Label>
+				</FilterBadge>
+			</AutoSubmitField>
+		);
+	});
 }
 
 export function ProductsFilterSkeleton() {
 	return (
-		<div className="flex flex-wrap gap-2">
-			{defaultCategories.map((category) => (
-				<Badge
+		<div className="flex flex-wrap gap-2 animate-pulse">
+			{Object.values(defaultCategories).map((category: Category) => (
+				<FilterBadge
 					key={category.value}
 					variant="outline"
-					className={cn("h-6 font-mono tabular-nums cursor-not-allowed pointer-events-none bg-muted", "animate-pulse")}
+					className="cursor-not-allowed pointer-events-none bg-accent border-none"
 				>
-					<Label className="invisible">{category.label}</Label>
-				</Badge>
+					<span className="invisible">{category.label}</span>
+				</FilterBadge>
 			))}
 		</div>
 	);

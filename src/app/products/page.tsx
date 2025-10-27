@@ -8,14 +8,18 @@ export default async function ProductsPage({
 	searchParams: Promise<{ [category: string]: string | string[] | undefined }>;
 }) {
 	return (
-		<div className="flex flex-col gap-4 min-h-screen items-center p-4">
-			<Suspense fallback={<ProductsFilterSkeleton />}>
-				<ProductsFilter category={searchParams.then((params) => params.category)} />
-			</Suspense>
+		<div className="min-h-screen px-4 py-8 space-y-8">
+			<section className="max-w-7xl mx-auto w-full">
+				<Suspense fallback={<ProductsFilterSkeleton />}>
+					<ProductsFilter category={searchParams.then((params) => params.category)} />
+				</Suspense>
+			</section>
 
-			<Suspense fallback={<ProductsListSkeleton />}>
-				<ProductsList category={searchParams.then((params) => params.category)} />
-			</Suspense>
+			<section className="max-w-7xl mx-auto w-full">
+				<Suspense fallback={<ProductsListSkeleton />}>
+					<ProductsList category={searchParams.then((params) => params.category)} />
+				</Suspense>
+			</section>
 		</div>
 	);
 }

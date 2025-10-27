@@ -1,42 +1,39 @@
 import { cacheLife } from "next/cache";
+import { productImageUrl } from "@/lib/constants";
 
 const aDayInSeconds = 60 * 60 * 24;
 
-export const defaultCategories = [
-	{ value: "electronics", label: "Electronics" },
-	{ value: "clothing", label: "Clothing" },
-	{ value: "books", label: "Books" },
-	{ value: "home", label: "Home" },
-	{ value: "garden", label: "Garden" },
-	{ value: "sports", label: "Sports" },
-	{ value: "beauty", label: "Beauty" },
-];
+export interface Category {
+	id: number;
+	label: string;
+	value: string;
+}
 
-export const getCategories = async () => {
+export const defaultCategories: { [key: string]: Category } = {
+	labubu: { id: 1, label: "Labubu", value: "labubu" },
+	poplandExclusive: { id: 2, label: "Popland Exclusive", value: "popland-exclusive" },
+	blindbox: { id: 3, label: "Blindbox", value: "blindbox" },
+	wholeset: { id: 4, label: "Wholeset", value: "wholeset" },
+	happyFactor: { id: 5, label: "Happy Factor", value: "happy-factor" },
+	surpriseShake: { id: 6, label: "Surprise Shake", value: "surprise-shake" },
+	secretMysteriousGuest: { id: 7, label: "Secret Mysterious Guest", value: "secret-mysterious-guest" },
+	newSeal: { id: 8, label: "Newseal", value: "new-seal" },
+	thailandExclusive: { id: 9, label: "Thailand Exclusive", value: "thailand-exclusive" },
+};
+
+export const getCategories = async (): Promise<Category[]> => {
 	"use cache";
 	cacheLife({ stale: aDayInSeconds });
 
-	return [
-		{ value: "electronics", label: "Electronics" },
-		{ value: "clothing", label: "Clothing" },
-		{ value: "books", label: "Books" },
-		{ value: "home", label: "Home" },
-		{ value: "garden", label: "Garden" },
-		{ value: "sports", label: "Sports" },
-		{ value: "beauty", label: "Beauty" },
-		{ value: "food", label: "Food" },
-		{ value: "beverage", label: "Beverage" },
-	];
+	return Object.values(defaultCategories);
 };
 
 export interface Product {
-	id: string;
+	id: number;
 	name: string;
-	description: string;
-	price: number;
 	image: string;
-	category: string[];
-	inStock: boolean;
+	categories: Category[];
+	subCategories: string[];
 }
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -45,58 +42,39 @@ export const getProducts = async (): Promise<Product[]> => {
 
 	return [
 		{
-			id: "1",
-			name: "Premium Wireless Headphones",
-			description: "High-quality wireless headphones with noise cancellation and 30-hour battery life.",
-			price: 299.99,
-			image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
-			category: ["electronics"],
-			inStock: true,
+			id: 136,
+			name: "POPLAND Mokoko CLOSE TO SWEET - Vinyl Plush Doll Pendant Keychain",
+			image: `${productImageUrl}/136.jpeg`,
+			categories: [defaultCategories.poplandExclusive, defaultCategories.labubu],
+			subCategories: ["White Tag", "Pink Tag"],
 		},
 		{
-			id: "2",
-			name: "Smart Fitness Watch",
-			description: "Advanced fitness tracking with heart rate monitoring, GPS, and water resistance.",
-			price: 199.99,
-			image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400",
-			category: ["electronics"],
-			inStock: true,
+			id: 138,
+			name: "POPLAND Mokoko CLOSE TO SWEET - Vinyl Plush Doll",
+			image: `${productImageUrl}/138.jpeg`,
+			categories: [defaultCategories.poplandExclusive, defaultCategories.labubu],
+			subCategories: ["White Tag"],
 		},
 		{
-			id: "3",
-			name: "Organic Coffee Beans",
-			description: "Premium organic coffee beans from sustainable farms. Rich, bold flavor with notes of chocolate.",
-			price: 24.99,
-			image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400",
-			category: ["food", "beverage"],
-			inStock: true,
+			id: 123,
+			name: "Popmart Labubu Wacky Mart Series Vinyl Plush Hanging Card",
+			image: `${productImageUrl}/123.jpeg`,
+			categories: [],
+			subCategories: [],
 		},
 		{
-			id: "4",
-			name: "Minimalist Backpack",
-			description: "Sleek, durable backpack perfect for daily commute or weekend adventures.",
-			price: 89.99,
-			image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
-			category: ["fashion"],
-			inStock: false,
-		},
-		{
-			id: "5",
-			name: "Yoga Mat Pro",
-			description: "Non-slip yoga mat with extra cushioning for maximum comfort during practice.",
-			price: 49.99,
-			image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400",
-			category: ["sports"],
-			inStock: true,
-		},
-		{
-			id: "6",
-			name: "Artisan Ceramic Mug",
-			description: "Handcrafted ceramic mug with unique glaze patterns. Perfect for your morning coffee.",
-			price: 18.99,
-			image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400",
-			category: ["home", "garden"],
-			inStock: true,
+			id: 85,
+			name: "Popmart Labubu Pin For Love Series-Vinyl Plush Pendant Blind Box (A-M)",
+			image: `${productImageUrl}/85.jpeg`,
+			categories: [defaultCategories.labubu],
+			subCategories: ["Blindbox", "D", "E", "F", "G", "H", "K", "J", "M", "L", "?"],
 		},
 	];
+};
+
+export const getProduct = async (id: number): Promise<Product | undefined> => {
+	"use cache";
+	cacheLife({ stale: aDayInSeconds });
+
+	return getProducts().then((products) => products.find((p) => p.id === id));
 };
