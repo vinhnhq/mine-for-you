@@ -40,7 +40,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 						</div>
 					</CardHeader>
 
-					<CardContent className="flex-1 flex flex-col p-0">
+					<CardContent className="flex-1 flex flex-col p-0 gap-4">
 						<div className="aspect-square relative">
 							<Image
 								src={product.image}
@@ -53,7 +53,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 						</div>
 
 						{product.subCategories.length > 0 && (
-							<div className="flex flex-col gap-2 p-4 my-4 bg-muted/80">
+							<div className="flex flex-col gap-2 p-4 bg-muted/80">
 								<CardDescription className="flex flex-wrap gap-2">
 									{product.subCategories.map((c) => (
 										<FilterBadge key={c}>{capitalize(c)}</FilterBadge>
