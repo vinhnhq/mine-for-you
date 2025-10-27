@@ -3,8 +3,9 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Image from "next/image";
-import { Toaster } from "@/components/ui/sonner";
 import Link from "next/link";
+import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
 
 const logoImage = "https://cdn-global-naus.popmart.com/global-web/naus-prod/assets/images/logo.png";
 
@@ -36,7 +37,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased text-base`}>
 				<header className="container mx-auto px-4 fixed top-0 left-0 right-0 py-4 bg-background/30 backdrop-blur-md z-50">
-					<Link href="/" className="flex flex-col items-center gap-1 h-full justify-center">
+					<Link
+						href="/"
+						className={cn(
+							"flex flex-col items-center gap-1 h-full justify-center",
+							"hover:scale-105 active:scale-95 transition-all duration-200 ease-in-out",
+							"focus-visible:none",
+							"cursor-pointer outline-none",
+						)}
+					>
 						<Image
 							src={logoImage}
 							alt="logo image"

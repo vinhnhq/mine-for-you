@@ -24,3 +24,11 @@ export default function FilterBadge({ children, className, variant, asChild }: F
 		</Badge>
 	);
 }
+
+export function TagBadge({ children, className }: { children: React.ReactNode; className?: string }) {
+	return (
+		<Badge variant="default" className={cn("h-6 bg-muted/80 text-primary", className)}>
+			{children}
+		</Badge>
+	);
+}

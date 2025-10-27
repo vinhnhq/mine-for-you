@@ -47,7 +47,6 @@ export default function ShareButton({ id }: ShareButtonProps) {
 			onClick={handleCopy}
 		>
 			<Share2 className="size-4" />
-			{isPending ? "Copying..." : isCopied ? "Copied" : "Share"}
 		</Button>
 	);
 }
