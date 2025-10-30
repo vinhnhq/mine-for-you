@@ -54,7 +54,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 							className="w-auto h-auto"
 							loading="eager"
 						/>
-						<span className="text-sm font-medium leading-none text-center">Mine for You</span>
+						<span className="text-sm font-medium leading-none text-center">MineForYou</span>
 					</Link>
 				</header>
 

@@ -4,11 +4,15 @@ import { TagBadge } from "@/components/filter-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { emptyProductsImage } from "@/lib/constants";
 import { capitalize } from "@/lib/shared";
+import { EnhancedProduct, Tables } from "@/lib/supabase/enhanced.database.types";
 import { cn } from "@/lib/utils";
-import { Product } from "./query";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, tags }: { product: EnhancedProduct; tags: Tables<"tags">[] }) {
+	const image = product.product_images[0]?.url;
+	const alt = product.product_images[0]?.alt ?? product.name;
+
 	return (
 		<Card
 			key={product.id}
@@ -16,7 +20,14 @@ export default function ProductCard({ product }: { product: Product }) {
 		>
 			<CardContent className="flex-1 flex flex-col p-0 m-0">
 				<div className="aspect-square relative">
-					<Image src={product.image} alt={product.name} loading="eager" fill className="w-full h-auto object-cover" />
+					<Image
+						src={image ?? emptyProductsImage}
+						alt={alt}
+						loading="eager"
+						fill
+						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+						className={cn("w-full h-auto object-cover", !image ? "blur-xs" : "")}
+					/>
 				</div>
 			</CardContent>
 
@@ -25,9 +36,9 @@ export default function ProductCard({ product }: { product: Product }) {
 					{product.name}
 				</CardTitle>
 				<CardDescription className="flex flex-wrap gap-2">
-					{product.categories.map((c) => (
-						<TagBadge className="border-black" key={c.value}>
-							{capitalize(c.label)}
+					{product.product_tags.map((t) => (
+						<TagBadge className="border-black" key={t.tag_id}>
+							{capitalize(tags.find((tag) => tag.id === t.tag_id)?.name ?? "Unknown")}
 						</TagBadge>
 					))}
 				</CardDescription>

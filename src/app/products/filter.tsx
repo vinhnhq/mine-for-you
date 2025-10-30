@@ -1,22 +1,24 @@
 import Link from "next/link";
-import { defaultCategories, getCategories } from "@/app/products/query";
 import FilterBadge from "@/components/filter-badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toArray } from "@/lib/shared";
+import { Tables } from "@/lib/supabase/enhanced.database.types";
 import { AutoSubmitField, AutoSubmitForm } from "./auto-submit-form";
-import { Category } from "./query";
+import { defaultTags, getTags } from "./query";
 
-export default async function ProductsFilter({ category }: { category: Promise<string | string[] | undefined> }) {
-	const allCategories = await getCategories();
-	const selectedCategories = toArray(await category);
+export default async function ProductsFilter({ tags: tagSlugs }: { tags: Promise<string | string[] | undefined> }) {
+	const allTags = await getTags();
+	const selectedTags = toArray(await tagSlugs);
+
+	const options = allTags.map((tag) => ({ value: tag.slug, label: tag.name }));
 
 	return (
 		<AutoSubmitForm action={"/products"}>
 			<div className="flex flex-wrap gap-2">
-				<MultiSelect name="category" options={allCategories} selectedValues={selectedCategories} />
+				<MultiSelect name="tags" options={options} selectedValues={selectedTags} />
 
-				{selectedCategories.length > 0 && (
+				{selectedTags.length > 0 && (
 					<FilterBadge className="text-destructive border-destructive hover:text-destructive-foreground">
 						<Link href="/products" className="focus-visible:outline-none">
 							Reset Filters
@@ -62,13 +64,13 @@ function MultiSelect({ name, options, selectedValues = [] }: MultiSelectProps) {
 export function ProductsFilterSkeleton() {
 	return (
 		<div className="flex flex-wrap gap-2 animate-pulse">
-			{Object.values(defaultCategories).map((category: Category) => (
+			{Object.values(defaultTags).map((tag: Omit<Tables<"tags">, "created_at" | "updated_at">) => (
 				<FilterBadge
-					key={category.value}
+					key={tag.slug}
 					variant="outline"
 					className="cursor-not-allowed pointer-events-none bg-accent border-none"
 				>
-					<span className="invisible">{category.label}</span>
+					<span className="invisible">{tag.name}</span>
 				</FilterBadge>
 			))}
 		</div>

@@ -2,9 +2,11 @@ import { Undo2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import FilterBadge, { TagBadge } from "@/components/filter-badge";
+import { match, P } from "ts-pattern";
+import { TagBadge } from "@/components/filter-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { emptyProductsImage } from "@/lib/constants";
 import { capitalize } from "@/lib/shared";
 import { cn } from "@/lib/utils";
 import { getProduct } from "../query";
@@ -15,11 +17,14 @@ interface ProductPageProps {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-	const product = await getProduct(Number(await params.then((p) => p.id)));
+	const [product, tags] = await getProduct(Number(await params.then((p) => p.id)));
 
 	if (!product) {
 		notFound();
 	}
+
+	const image = product.product_images[0]?.url;
+	const alt = product.product_images[0]?.alt ?? product.name;
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -28,12 +33,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 					<CardContent className="flex-1 flex flex-col p-0 m-0">
 						<div className="relative">
 							<Image
-								src={product.image}
-								alt={product.name}
+								src={image ?? emptyProductsImage}
+								alt={alt}
 								loading="eager"
 								width={400}
 								height={400}
-								className="w-full h-auto object-cover"
+								className={cn("w-full h-auto object-cover", !image ? "blur-xs" : "")}
 							/>
 						</div>
 					</CardContent>
@@ -43,22 +48,32 @@ export default async function ProductPage({ params }: ProductPageProps) {
 							{product.name}
 						</CardTitle>
 
-						{product.categories.length > 0 && (
+						{product.product_tags.length > 0 && (
 							<CardDescription className="flex flex-wrap gap-2">
-								{product.categories.map((c) => (
-									<TagBadge key={c.value}>{capitalize(c.label)}</TagBadge>
+								{product.product_tags.map((t) => (
+									<TagBadge key={t.tag_id}>
+										{capitalize(tags.find((tag) => tag.id === t.tag_id)?.name ?? "Unknown")}
+									</TagBadge>
 								))}
 							</CardDescription>
 						)}
 
-						{product.subCategories.length > 0 && (
+						{product.sub_products.length > 0 && (
 							<div className="flex flex-col gap-4 p-4 bg-muted/80 rounded-lg">
 								<CardDescription className="flex flex-wrap gap-2">
-									{product.subCategories.map((c) => (
-										<TagBadge className="border-black" key={c}>
-											{capitalize(c)}
-										</TagBadge>
-									))}
+									{product.sub_products.map((sp) =>
+										match(sp)
+											.with({ available: P.nullish }, () => {
+												return null;
+											})
+											.otherwise(() => {
+												return (
+													<TagBadge className="border-black" key={sp.id}>
+														{sp.name}
+													</TagBadge>
+												);
+											}),
+									)}
 								</CardDescription>
 								<p className="text-xs text-muted-foreground italic">
 									This product is available for individual purchase.

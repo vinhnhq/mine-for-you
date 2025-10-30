@@ -15,3 +15,9 @@ export type Database = MergeDeep<
 >;
 
 export type Tables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Row"];
+
+export type EnhancedProduct = Tables<"products"> & {
+	product_images: Tables<"product_images">[];
+	product_tags: Tables<"product_tags">[];
+	sub_products: Tables<"sub_products">[];
+};

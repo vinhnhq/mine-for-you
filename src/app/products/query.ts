@@ -1,80 +1,50 @@
-import { cacheLife } from "next/cache";
-import { productImageUrl } from "@/lib/constants";
+import { EnhancedProduct, type Tables } from "@/lib/supabase/enhanced.database.types";
+import { createClient } from "@/lib/supabase/server";
 
-const aDayInSeconds = 60 * 60 * 24;
-
-export interface Category {
-	id: number;
-	label: string;
-	value: string;
-}
-
-export const defaultCategories: { [key: string]: Category } = {
-	labubu: { id: 1, label: "Labubu", value: "labubu" },
-	poplandExclusive: { id: 2, label: "Popland Exclusive", value: "popland-exclusive" },
-	blindbox: { id: 3, label: "Blindbox", value: "blindbox" },
-	wholeset: { id: 4, label: "Wholeset", value: "wholeset" },
-	happyFactor: { id: 5, label: "Happy Factor", value: "happy-factor" },
-	surpriseShake: { id: 6, label: "Surprise Shake", value: "surprise-shake" },
-	secretMysteriousGuest: { id: 7, label: "Secret Mysterious Guest", value: "secret-mysterious-guest" },
-	newSeal: { id: 8, label: "Newseal", value: "new-seal" },
-	thailandExclusive: { id: 9, label: "Thailand Exclusive", value: "thailand-exclusive" },
+export const defaultTags: { [key: string]: Omit<Tables<"tags">, "created_at" | "updated_at"> } = {
+	labubu: { id: 1, slug: "labubu", name: "Labubu" },
+	poplandExclusive: { id: 2, slug: "popland-exclusive", name: "Popland Exclusive" },
+	blindbox: { id: 3, slug: "blindbox", name: "Blindbox" },
+	wholeset: { id: 4, slug: "wholeset", name: "Wholeset" },
+	happyFactor: { id: 5, slug: "happy-factor", name: "Happy Factor" },
+	surpriseShake: { id: 6, slug: "surprise-shake", name: "Surprise Shake" },
+	secretMysteriousGuest: { id: 7, slug: "secret-mysterious-guest", name: "Secret Mysterious Guest" },
+	newSeal: { id: 8, slug: "new-seal", name: "Newseal" },
+	thailandExclusive: { id: 9, slug: "thailand-exclusive", name: "Thailand Exclusive" },
 };
 
-export const getCategories = async (): Promise<Category[]> => {
-	"use cache";
-	cacheLife({ stale: aDayInSeconds });
+export const getTags = async (): Promise<Tables<"tags">[]> => {
+	const supabase = await createClient();
 
-	return Object.values(defaultCategories);
+	return supabase
+		.from("tags")
+		.select("*")
+		.then(({ data }) => data ?? []);
 };
 
-export interface Product {
-	id: number;
-	name: string;
-	image: string;
-	categories: Category[];
-	subCategories: string[];
-}
+export const getProducts = async (): Promise<[EnhancedProduct[], Tables<"tags">[]]> => {
+	const supabase = await createClient();
 
-export const getProducts = async (): Promise<Product[]> => {
-	"use cache";
-	cacheLife({ stale: aDayInSeconds });
+	const tags = await getTags();
+	const products = await supabase
+		.from("products")
+		.select("*, product_images(*), product_tags(*), sub_products(*)")
+		.order("created_at", { ascending: false })
+		.then(({ data }) => data ?? []);
 
-	return [
-		{
-			id: 136,
-			name: "POPLAND Mokoko CLOSE TO SWEET - Vinyl Plush Doll Pendant Keychain",
-			image: `${productImageUrl}/136.jpeg`,
-			categories: [defaultCategories.poplandExclusive, defaultCategories.labubu],
-			subCategories: ["White Tag", "Pink Tag"],
-		},
-		{
-			id: 138,
-			name: "POPLAND Mokoko CLOSE TO SWEET - Vinyl Plush Doll",
-			image: `${productImageUrl}/138.jpeg`,
-			categories: [defaultCategories.poplandExclusive, defaultCategories.labubu],
-			subCategories: ["White Tag"],
-		},
-		{
-			id: 123,
-			name: "Popmart Labubu Wacky Mart Series Vinyl Plush Hanging Card",
-			image: `${productImageUrl}/123.jpeg`,
-			categories: [],
-			subCategories: [],
-		},
-		{
-			id: 85,
-			name: "Popmart Labubu Pin For Love Series-Vinyl Plush Pendant Blind Box (A-M)",
-			image: `${productImageUrl}/85.jpeg`,
-			categories: [defaultCategories.labubu],
-			subCategories: ["Blindbox", "D", "E", "F", "G", "H", "K", "J", "M", "L", "?"],
-		},
-	];
+	return [products, tags];
 };
 
-export const getProduct = async (id: number): Promise<Product | undefined> => {
-	"use cache";
-	cacheLife({ stale: aDayInSeconds });
+export const getProduct = async (id: number): Promise<[EnhancedProduct | undefined, Tables<"tags">[]]> => {
+	const supabase = await createClient();
 
-	return getProducts().then((products) => products.find((p) => p.id === id));
+	const tags = await getTags();
+	const product = await supabase
+		.from("products")
+		.select("*, product_images(*), product_tags(*), sub_products(*)")
+		.eq("id", id)
+		.single()
+		.then(({ data }) => data ?? undefined);
+
+	return [product, tags];
 };

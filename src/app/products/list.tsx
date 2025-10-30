@@ -1,28 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
+import { match, P } from "ts-pattern";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { emptyProductsImage } from "@/lib/constants";
 import ProductCard, { ProductCardSkeleton } from "./card";
 import { getProducts } from "./query";
 
-export default async function ProductsList({ category }: { category: Promise<string | string[] | undefined> }) {
-	const selectedCategories = await category;
-	const allProducts = await getProducts();
+export default async function ProductsList({ tags: tagSlugs }: { tags: Promise<string | string[] | undefined> }) {
+	const selectedTags = await tagSlugs;
+	const [products, tags] = await getProducts();
 
-	const filteredProducts =
-		allProducts.filter((product) => {
-			return selectedCategories ? product.categories.some((c) => selectedCategories.includes(c.value)) : true;
-		}) || allProducts;
-
-	if (filteredProducts.length === 0) {
-		return <EmptyProducts />;
-	}
+	const filteredProducts = products.filter((product) =>
+		selectedTags ? product.product_tags.some((t) => selectedTags.includes(t.tag_id.toString())) : true,
+	);
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-			{filteredProducts.map((product) => (
-				<ProductCard key={product.id} product={product} />
-			))}
+			{match(filteredProducts)
+				.with([], () => (
+					<div className="col-span-full">
+						<EmptyProducts />
+					</div>
+				))
+				.with(P.array(), (enhancedProducts) =>
+					enhancedProducts.map((product) => <ProductCard key={product.id} product={product} tags={tags} />),
+				)
+				.exhaustive()}
 		</div>
 	);
 }
@@ -37,7 +40,7 @@ export function ProductsListSkeleton() {
 	);
 }
 
-function EmptyProducts() {
+export function EmptyProducts() {
 	return (
 		<Empty className="p-0">
 			<EmptyHeader>
