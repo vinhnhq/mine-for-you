@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { Database } from "../../../enhanced.database.types";
+import { Database } from "@/lib/supabase/enhanced.database.types";
 import { hasEnvVars } from "../utils";
 
 export async function updateSession(request: NextRequest) {
@@ -44,7 +44,8 @@ export async function updateSession(request: NextRequest) {
 	const { data } = await supabase.auth.getClaims();
 	const user = data?.claims;
 
-	if (
+  // TODO: add this later
+	/* if (
 		request.nextUrl.pathname !== "/" &&
 		!user &&
 		!request.nextUrl.pathname.startsWith("/login") &&
@@ -54,7 +55,7 @@ export async function updateSession(request: NextRequest) {
 		const url = request.nextUrl.clone();
 		url.pathname = "/auth/login";
 		return NextResponse.redirect(url);
-	}
+	} */
 
 	// IMPORTANT: You *must* return the supabaseResponse object as it is.
 	// If you're creating a new response object with NextResponse.next() make sure to:
