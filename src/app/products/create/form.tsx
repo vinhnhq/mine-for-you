@@ -71,10 +71,8 @@ export default function ProductCreateForm({ tags }: { tags: Tables<"tags">[] }) 
 								<Input
 									type="file"
 									name="images"
-									placeholder="e.g. image1.jpg, image2.jpg"
+									placeholder="e.g. image1.jpg"
 									accept="image/*"
-									multiple
-									required
 								/>
 							</Field>
 

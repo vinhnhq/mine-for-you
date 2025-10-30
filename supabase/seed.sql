@@ -1,9 +1,45 @@
+insert into
+    public.tags (slug, name)
+values ('baby-three', 'Baby Three');
+
+insert into public.tags (slug, name) values ('crybaby', 'Crybaby');
+
+insert into public.tags (slug, name) values ('hacipupu', 'Hacipupu');
+
 insert into public.tags (slug, name) values ('labubu', 'Labubu');
-insert into public.tags (slug, name) values ('popland-exclusive', 'Popland Exclusive');
-insert into public.tags (slug, name) values ('blindbox', 'Blindbox');
-insert into public.tags (slug, name) values ('wholeset', 'Wholeset');
-insert into public.tags (slug, name) values ('happy-factor', 'Happy Factor');
-insert into public.tags (slug, name) values ('surprise-shake', 'Surprise Shake');
-insert into public.tags (slug, name) values ('secret-mysterious-guest', 'Secret Mysterious Guest');
-insert into public.tags (slug, name) values ('new-seal', 'New Seal');
-insert into public.tags (slug, name) values ('thailand-exclusive', 'Thailand Exclusive');
+
+insert into
+    public.tags (slug, name)
+values (
+        'thailand-exclusive',
+        'Thailand Exclusive'
+    );
+
+insert into
+    public.tags (slug, name)
+values ('rare-item', 'Rare Item');
+
+insert into
+    public.tags (slug, name)
+values (
+        'singapore-exclusive',
+        'Singapore Exclusive'
+    );
+
+insert into
+    public.tags (slug, name)
+values (
+        'mega-space-molly',
+        'Mega Space Molly'
+    );
+
+insert into
+    public.tags (slug, name)
+values ('skullpanda', 'Skullpanda');
+
+insert into
+    public.tags (slug, name)
+values (
+        'twinkle-twinkle',
+        'Twinkle Twinkle'
+    );
