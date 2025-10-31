@@ -55,7 +55,7 @@ export async function createProduct(prevState: ActionResponse | null, formData: 
 
 		for (let i = 0; i < imageFiles.length; i++) {
 			const file = imageFiles[i];
-			if (file instanceof File) {
+			if (file instanceof File && file.size > 0) {
 				const fileExtension = file.name.split(".").pop() || "jpg";
 				const slugifiedFileName = `${productSlug}-${i + 1}.${fileExtension}`;
 

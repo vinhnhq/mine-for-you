@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { EnhancedProduct, type Tables } from "@/lib/supabase/enhanced.database.types";
 import { createClient } from "@/lib/supabase/server";
 
@@ -13,24 +14,40 @@ export const defaultTags: { [key: string]: Omit<Tables<"tags">, "created_at" | "
 	thailandExclusive: { id: 9, slug: "thailand-exclusive", name: "Thailand Exclusive" },
 };
 
-export const getTags = async (): Promise<Tables<"tags">[]> => {
+export const getTags = cache(async (): Promise<Tables<"tags">[]> => {
 	const supabase = await createClient();
 
 	return supabase
 		.from("tags")
 		.select("*")
 		.then(({ data }) => data ?? []);
-};
+});
 
-export const getProducts = async (): Promise<[EnhancedProduct[], Tables<"tags">[]]> => {
+export const getProducts = async (selectedTagSlugs: string[]): Promise<[EnhancedProduct[], Tables<"tags">[]]> => {
 	const supabase = await createClient();
 
 	const tags = await getTags();
-	const products = await supabase
-		.from("products")
-		.select("*, product_images(*), product_tags(*), sub_products(*)")
-		.order("created_at", { ascending: false })
-		.then(({ data }) => data ?? []);
+	const tagIds =
+		selectedTagSlugs.length > 0
+			? tags.filter((tag) => selectedTagSlugs.includes(tag.slug)).map((tag) => Number(tag.id))
+			: [];
+
+	const hasTagFilters = tagIds.length > 0;
+
+	let baseQuery = supabase.from("products");
+
+	const productsQuery = hasTagFilters
+		? baseQuery
+				.select("*, product_images(*), product_tags!inner(*), sub_products(*)")
+				.filter("product_tags.tag_id", "in", `(${tagIds.join(",")})`)
+				.order("created_at", { ascending: false })
+				.throwOnError()
+		: baseQuery
+				.select("*, product_images(*), product_tags(*), sub_products(*)")
+				.order("created_at", { ascending: false })
+				.throwOnError();
+
+	const products = await productsQuery.then(({ data }) => data ?? []);
 
 	return [products, tags];
 };

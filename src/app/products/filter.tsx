@@ -7,11 +7,18 @@ import { Tables } from "@/lib/supabase/enhanced.database.types";
 import { AutoSubmitField, AutoSubmitForm } from "./auto-submit-form";
 import { defaultTags, getTags } from "./query";
 
-export default async function ProductsFilter({ tags: tagSlugs }: { tags: Promise<string | string[] | undefined> }) {
-	const allTags = await getTags();
-	const selectedTags = toArray(await tagSlugs);
+export default async function ProductsFilter({
+	selectedTagSlugs,
+}: {
+	selectedTagSlugs: Promise<string | string[] | undefined>;
+}) {
+	const tags = await getTags();
+	const selectedTags = toArray(await selectedTagSlugs);
 
-	const options = allTags.map((tag) => ({ value: tag.slug, label: tag.name }));
+	const options = tags.map((tag) => ({
+		value: tag.slug,
+		label: tag.name,
+	}));
 
 	return (
 		<AutoSubmitForm action={"/products"}>

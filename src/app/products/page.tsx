@@ -11,13 +11,13 @@ export default async function ProductsPage({
 		<div className="min-h-screen px-4 py-8 space-y-8">
 			<section className="max-w-7xl mx-auto w-full">
 				<Suspense fallback={<ProductsFilterSkeleton />}>
-					<ProductsFilter tags={searchParams.then((params) => params.tags)} />
+					<ProductsFilter selectedTagSlugs={searchParams.then((params) => params.tags)} />
 				</Suspense>
 			</section>
 
 			<section className="max-w-7xl mx-auto w-full">
 				<Suspense fallback={<ProductsListSkeleton />}>
-					<ProductsList tags={searchParams.then((params) => params.tags)} />
+					<ProductsList selectedTagSlugs={searchParams.then((params) => params.tags)} />
 				</Suspense>
 			</section>
 		</div>

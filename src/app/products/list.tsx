@@ -3,20 +3,20 @@ import Link from "next/link";
 import { match, P } from "ts-pattern";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { emptyProductsImage } from "@/lib/constants";
+import { toArray } from "@/lib/shared";
 import ProductCard, { ProductCardSkeleton } from "./card";
 import { getProducts } from "./query";
 
-export default async function ProductsList({ tags: tagSlugs }: { tags: Promise<string | string[] | undefined> }) {
-	const selectedTags = await tagSlugs;
-	const [products, tags] = await getProducts();
-
-	const filteredProducts = products.filter((product) =>
-		selectedTags ? product.product_tags.some((t) => selectedTags.includes(t.tag_id.toString())) : true,
-	);
+export default async function ProductsList({
+	selectedTagSlugs,
+}: {
+	selectedTagSlugs: Promise<string | string[] | undefined>;
+}) {
+	const [products, tags] = await getProducts(toArray(await selectedTagSlugs));
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-			{match(filteredProducts)
+			{match(products)
 				.with([], () => (
 					<div className="col-span-full">
 						<EmptyProducts />
