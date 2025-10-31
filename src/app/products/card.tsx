@@ -23,10 +23,12 @@ export default function ProductCard({ product, tags }: { product: EnhancedProduc
 					<Image
 						src={image ?? emptyProductsImage}
 						alt={alt}
-						loading="eager"
 						fill
 						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 						className={cn("w-full h-auto object-cover", !image ? "blur-xs" : "")}
+						placeholder="blur"
+						blurDataURL={emptyProductsImage}
+						preload={false}
 					/>
 				</div>
 			</CardContent>

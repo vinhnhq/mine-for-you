@@ -51,6 +51,9 @@ export function EmptyProducts() {
 						width={400}
 						height={400}
 						className="w-full h-auto object-contain"
+						placeholder="blur"
+						blurDataURL={emptyProductsImage}
+						preload={false}
 					/>
 				</EmptyMedia>
 				<EmptyTitle>Oops!</EmptyTitle>
