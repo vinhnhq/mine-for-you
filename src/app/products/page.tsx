@@ -1,12 +1,12 @@
 import { Suspense } from "react";
-import ProductsFilter, { ProductsFilterSkeleton } from "./filter";
-import ProductsList, { ProductsListSkeleton } from "./list";
+import ProductsFilter, { ProductsFilterSkeleton } from "./_shared/filter";
+import ProductsList, { ProductsListSkeleton } from "./_shared/list";
 
-export default async function ProductsPage({
-	searchParams,
-}: {
+type ProductsPageProps = {
 	searchParams: Promise<{ [tags: string]: string | string[] | undefined }>;
-}) {
+};
+
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
 	return (
 		<div className="min-h-screen px-4 py-8 space-y-8">
 			<section className="max-w-7xl mx-auto w-full">

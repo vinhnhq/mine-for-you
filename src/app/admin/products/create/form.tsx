@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { type Tables } from "@/lib/supabase/enhanced.database.types";
-import { type ActionResponse, createProduct } from "./actions";
+import { type ActionResponse, createProduct } from "../_shared/actions";
 
 const initialState: ActionResponse = {
 	success: false,
@@ -68,12 +68,7 @@ export default function ProductCreateForm({ tags }: { tags: Tables<"tags">[] }) 
 							<Field>
 								<FieldLabel>Gallery</FieldLabel>
 								<FieldDescription>Upload images to your product</FieldDescription>
-								<Input
-									type="file"
-									name="images"
-									placeholder="e.g. image1.jpg"
-									accept="image/*"
-								/>
+								<Input type="file" name="images" placeholder="e.g. image1.jpg" accept="image/*" />
 							</Field>
 
 							<Field>

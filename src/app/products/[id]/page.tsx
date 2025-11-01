@@ -7,10 +7,10 @@ import { TagBadge } from "@/components/filter-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { emptyProductsImage } from "@/lib/constants";
+import { getProduct } from "@/lib/dal/product";
 import { capitalize } from "@/lib/shared";
 import { cn } from "@/lib/utils";
-import { getProduct } from "../query";
-import ShareButton from "./share-button";
+import ShareButton from "../_shared/share-button";
 
 interface ProductPageProps {
 	params: Promise<{ id: string }>;
@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 								loading="eager"
 								width={400}
 								height={400}
-								className={cn("w-full h-auto object-cover", !image ? "blur-xs" : "")}
+								className={cn("w-full h-auto object-cover rounded-md", !image ? "blur-xs" : "")}
 							/>
 						</div>
 					</CardContent>

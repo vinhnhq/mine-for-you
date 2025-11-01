@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -13,9 +13,33 @@ type SubProductItem = {
 	available: boolean;
 };
 
-export function SubProductsInput({ name }: { name: string }) {
+type InitialSubProduct = {
+	name: string;
+	available: boolean | null;
+};
+
+export function SubProductsInput({
+	name,
+	initialValues = [],
+}: {
+	name: string;
+	initialValues?: InitialSubProduct[];
+}) {
 	const [subProductInput, setSubProductInput] = useState("");
 	const [subProducts, setSubProducts] = useState<SubProductItem[]>([]);
+
+	// Initialize with existing sub-products when in edit mode
+	useEffect(() => {
+		if (initialValues.length > 0 && subProducts.length === 0) {
+			setSubProducts(
+				initialValues.map((sp) => ({
+					id: crypto.randomUUID(),
+					name: sp.name,
+					available: sp.available ?? true,
+				}))
+			);
+		}
+	}, [initialValues]);
 
 	const serializedSubProducts = useMemo(() => {
 		return JSON.stringify(

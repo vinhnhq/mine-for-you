@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import ProductCreateForm from "./form";
 
-export default async function ProductCreatePage() {
+export default async function AdminProductCreatePage() {
 	const supabase = await createClient();
 	const { data: tags } = await supabase.from("tags").select("*");
 

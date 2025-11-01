@@ -2,16 +2,15 @@ import Link from "next/link";
 import FilterBadge from "@/components/filter-badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { defaultTags, getTags } from "@/lib/dal/product";
 import { toArray } from "@/lib/shared";
-import { Tables } from "@/lib/supabase/enhanced.database.types";
 import { AutoSubmitField, AutoSubmitForm } from "./auto-submit-form";
-import { defaultTags, getTags } from "./query";
 
-export default async function ProductsFilter({
-	selectedTagSlugs,
-}: {
+type ProductsFilterProps = {
 	selectedTagSlugs: Promise<string | string[] | undefined>;
-}) {
+};
+
+export default async function ProductsFilter({ selectedTagSlugs }: ProductsFilterProps) {
 	const tags = await getTags();
 	const selectedTags = toArray(await selectedTagSlugs);
 
@@ -71,7 +70,7 @@ function MultiSelect({ name, options, selectedValues = [] }: MultiSelectProps) {
 export function ProductsFilterSkeleton() {
 	return (
 		<div className="flex flex-wrap gap-2 animate-pulse">
-			{Object.values(defaultTags).map((tag: Omit<Tables<"tags">, "created_at" | "updated_at">) => (
+			{Object.values(defaultTags).map((tag) => (
 				<FilterBadge
 					key={tag.slug}
 					variant="outline"

@@ -3,16 +3,17 @@ import Link from "next/link";
 import { match, P } from "ts-pattern";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { emptyProductsImage } from "@/lib/constants";
+import { getProducts } from "@/lib/dal/product";
 import { toArray } from "@/lib/shared";
 import ProductCard, { ProductCardSkeleton } from "./card";
-import { getProducts } from "./query";
 
-export default async function ProductsList({
-	selectedTagSlugs,
-}: {
+type ProductsListProps = {
 	selectedTagSlugs: Promise<string | string[] | undefined>;
-}) {
-	const [products, tags] = await getProducts(toArray(await selectedTagSlugs));
+};
+
+export default async function ProductsList({ selectedTagSlugs }: ProductsListProps) {
+	const slugs = toArray(await selectedTagSlugs);
+	const [products, tags] = await getProducts(slugs);
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
