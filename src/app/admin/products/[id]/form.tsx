@@ -73,6 +73,19 @@ export default function ProductEditForm({ product, tags }: { product: EnhancedPr
 							</Field>
 
 							<Field>
+								<FieldLabel>Price</FieldLabel>
+								<FieldDescription>The price of your product</FieldDescription>
+								<Input
+									type="number"
+									min={0}
+									step={0.01}
+									name="price"
+									placeholder="e.g. 22.12"
+									defaultValue={product.price?.toString() ?? ""}
+								/>
+							</Field>
+
+							<Field>
 								<FieldLabel>Tags</FieldLabel>
 								<FieldDescription>Select the tags that best describe your product</FieldDescription>
 								<FieldGroup className="grid grid-cols-2 gap-3">

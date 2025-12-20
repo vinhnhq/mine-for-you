@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const productSchema = z.object({
 	name: z.string().min(1),
+	price: z.number().min(0).optional().default(0),
 	tags: z.array(z.number()).optional().default([]),
 	images: z.array(z.string()).optional().default([]),
 	subProducts: z
@@ -39,6 +40,7 @@ export async function createProduct(prevState: ActionResponse | null, formData: 
 		const supabase = await createClient();
 
 		const name = formData.get("name");
+		const price = formData.get("price") ? Number(formData.get("price")) : 0;
 		const tags = formData.getAll("tags").map((t) => Number(t));
 		const subProductsRaw = formData.get("sub-products");
 		const imageFiles = formData.getAll("images");
@@ -48,8 +50,13 @@ export async function createProduct(prevState: ActionResponse | null, formData: 
 			subProductsParsed = JSON.parse(subProductsRaw);
 		}
 
-		const validated = productSchema.parse({ name, tags, subProducts: subProductsParsed });
-		const { name: validatedName, tags: validatedTags, subProducts: validatedSubProducts } = validated;
+		const validated = productSchema.parse({ name, price, tags, subProducts: subProductsParsed });
+		const {
+			name: validatedName,
+			price: validatedPrice,
+			tags: validatedTags,
+			subProducts: validatedSubProducts,
+		} = validated;
 
 		// Upload images first
 		const uploadedImages: { name: string; url: string; alt: string }[] = [];
@@ -73,7 +80,10 @@ export async function createProduct(prevState: ActionResponse | null, formData: 
 
 		const product = await supabase
 			.from("products")
-			.insert({ name: validatedName, price: 0 })
+			.insert({
+				name: validatedName,
+				price: validatedPrice,
+			})
 			.select()
 			.single()
 			.throwOnError();
@@ -165,6 +175,7 @@ export async function updateProduct(prevState: ActionResponse | null, formData: 
 		}
 
 		const name = formData.get("name");
+		const price = formData.get("price") ? Number(formData.get("price")) : 0;
 		const tags = formData.getAll("tags").map((t) => Number(t));
 		const subProductsRaw = formData.get("sub-products");
 		const imageFiles = formData.getAll("images");
@@ -175,13 +186,22 @@ export async function updateProduct(prevState: ActionResponse | null, formData: 
 			subProductsParsed = JSON.parse(subProductsRaw);
 		}
 
-		const validated = productSchema.parse({ name, tags, subProducts: subProductsParsed });
-		const { name: validatedName, tags: validatedTags, subProducts: validatedSubProducts } = validated;
+		const validated = productSchema.parse({ name, price, tags, subProducts: subProductsParsed });
+		const {
+			name: validatedName,
+			price: validatedPrice,
+			tags: validatedTags,
+			subProducts: validatedSubProducts,
+		} = validated;
 
 		const productIdNum = Number(productId);
 
 		// Update product name
-		await supabase.from("products").update({ name: validatedName }).eq("id", productIdNum).throwOnError();
+		await supabase
+			.from("products")
+			.update({ name: validatedName, price: validatedPrice })
+			.eq("id", productIdNum)
+			.throwOnError();
 
 		// Delete removed images
 		if (deletedImageIds.length > 0) {

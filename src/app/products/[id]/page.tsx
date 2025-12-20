@@ -50,6 +50,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 						{product.product_tags.length > 0 && (
 							<CardDescription className="flex flex-wrap gap-2">
+								{Number(product.price) > 0 && <TagBadge>from ${product.price} AUD</TagBadge>}
 								{product.product_tags.map((t) => (
 									<TagBadge key={t.tag_id}>
 										{capitalize(tags.find((tag) => tag.id === t.tag_id)?.name ?? "Unknown")}

@@ -46,7 +46,13 @@ export default function ProductCard({ product, tags }: { product: EnhancedProduc
 				</CardDescription>
 			</CardHeader>
 
-			<CardFooter className="flex gap-4 justify-end p-4 bg-muted/80">
+			<CardFooter className="flex gap-4 justify-between p-4 bg-muted/80">
+				<div>
+					{Number(product.price) > 0 && (
+						<span className="italic text-xs text-muted-foreground">from ${product.price} AUD</span>
+					)}
+				</div>
+
 				<Button
 					asChild
 					variant="default"
