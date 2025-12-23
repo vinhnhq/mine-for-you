@@ -8,7 +8,7 @@ type ProductsPageProps = {
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
 	return (
-		<div className="min-h-screen px-4 py-8 space-y-8">
+		<div className="min-h-screen px-4 space-y-8">
 			<section className="max-w-7xl mx-auto w-full">
 				<Suspense fallback={<ProductsFilterSkeleton />}>
 					<ProductsFilter selectedTagSlugs={searchParams.then((params) => params.tags)} />

@@ -7,8 +7,6 @@ import Link from "next/link";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 
-const logoImage = "https://cdn-global-naus.popmart.com/global-web/naus-prod/assets/images/logo.png";
-
 const geistSans = Geist({
 	variable: "--font-geist-sans",
 	subsets: ["latin"],
@@ -36,29 +34,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 	return (
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased text-base`}>
-				<header className="container mx-auto px-4 fixed top-0 left-0 right-0 py-4 bg-background/30 backdrop-blur-md z-50">
-					<Link
-						href="/"
-						className={cn(
-							"flex flex-col items-center gap-1 h-full justify-center",
-							"hover:scale-105 active:scale-95 transition-all duration-200 ease-in-out",
-							"focus-visible:none",
-							"cursor-pointer outline-none",
-						)}
-					>
-						<Image
-							src={logoImage}
-							alt="logo image"
-							width={100}
-							height={100}
-							className="w-auto h-auto"
-							loading="eager"
-						/>
-						<span className="text-sm font-medium leading-none text-center">MMineForYou</span>
+				<header className="container mx-auto py-4">
+					<Link href="/" className="flex justify-center items-center">
+						<Image src={"/logo.png"} alt="logo image" width={128} height={128} loading="eager" />
 					</Link>
 				</header>
 
-				<main className="mt-24">{children}</main>
+				<main className="">{children}</main>
 
 				<footer className="container mx-auto py-2 px-4 flex justify-center items-center">
 					<span className="text-xs text-muted-foreground">© 2025 MMine for You.</span>
