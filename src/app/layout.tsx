@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Mine for You - Premium Products",
+	title: "MMine for You - Premium Products",
 	description: "Discover amazing products curated just for you.",
 };
 
