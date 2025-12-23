@@ -58,10 +58,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 					</Link>
 				</header>
 
-				<main className="mt-16">{children}</main>
+				<main className="mt-24">{children}</main>
 
 				<footer className="container mx-auto py-2 px-4 flex justify-center items-center">
-					<span className="text-xs text-muted-foreground">© 2025 Mine for You.</span>
+					<span className="text-xs text-muted-foreground">© 2025 MMine for You.</span>
 				</footer>
 
 				<Toaster />
